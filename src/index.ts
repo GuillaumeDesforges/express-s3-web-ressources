@@ -3,7 +3,7 @@ import { gql, GraphQLClient, request } from "graphql-request";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { s3 } from "./s3";
-import { S3_BUCKET, GQL_API_URL, GQL_HEADERS } from "./settings";
+import { S3_BUCKET, GQL_API_URL, GQL_HEADERS, PORT } from "./settings";
 
 // Common
 
@@ -69,4 +69,4 @@ app.get("/:id", async (req, res) => {
     .pipe(res);
 });
 
-app.listen(3000);
+app.listen(PORT);

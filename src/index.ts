@@ -50,10 +50,7 @@ app.post(
       return next({
         type: "error",
         httpCode: 403,
-        message: {
-          errCode: 403,
-          text: "Bad header 'Upload-Password'",
-        },
+        message: "Bad header 'Upload-Password'",
       });
     }
     next();

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --inspect=4321 --respawn --transpileOnly src/index.ts"
+    "dev": "ts-node-dev --inspect=4321 --respawn src/index.ts"
   },
   "dependencies": {
     "aws-sdk": "^2.832.0",

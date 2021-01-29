@@ -45,26 +45,25 @@ const addFileMutation = gql`
 app.post(
   "/",
   (req, res, next) => {
-    const authHeader = req.headers["Upload-Password"];
-    if (authHeader != UPLOAD_PASSWORD) {
-      return next({
-        type: "error",
-        httpCode: 403,
-        message: "Bad header 'Upload-Password'",
-      });
+    const authHeader = req.headers["upload-password"];
+    if (authHeader !== UPLOAD_PASSWORD) {
+      return next("Bad header 'Upload-Password'");
     }
     next();
   },
   upload.single("file"),
   async (req, res) => {
-    const { insert_files_one } = await gqlClient.request(addFileMutation, {
-      s3_path: (req.file as any).key,
-    });
+    const { insert_files_one: file } = await gqlClient.request(
+      addFileMutation,
+      {
+        s3_path: (req.file as any).key,
+      }
+    );
     res.send(
       "Successfully uploaded " +
         req.file.originalname +
         " and registered id " +
-        insert_files_one
+        file.id
     );
   }
 );

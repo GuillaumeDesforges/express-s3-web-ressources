@@ -3,7 +3,13 @@ import { gql, GraphQLClient, request } from "graphql-request";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { s3 } from "./s3";
-import { S3_BUCKET, GQL_API_URL, GQL_HEADERS, PORT } from "./settings";
+import {
+  S3_BUCKET,
+  GQL_API_URL,
+  GQL_HEADERS,
+  PORT,
+  UPLOAD_PASSWORD,
+} from "./settings";
 
 // Common
 
@@ -36,17 +42,35 @@ const addFileMutation = gql`
   }
 `;
 
-app.post("/", upload.single("file"), async (req, res) => {
-  const { insert_files_one } = await gqlClient.request(addFileMutation, {
-    s3_path: (req.file as any).key,
-  });
-  res.send(
-    "Successfully uploaded " +
-      req.file.originalname +
-      " and registered id " +
-      insert_files_one
-  );
-});
+app.post(
+  "/",
+  (req, res, next) => {
+    const authHeader = req.headers["Upload-Password"];
+    if (authHeader != UPLOAD_PASSWORD) {
+      return next({
+        type: "error",
+        httpCode: 403,
+        message: {
+          errCode: 403,
+          text: "Bad header 'Upload-Password'",
+        },
+      });
+    }
+    next();
+  },
+  upload.single("file"),
+  async (req, res) => {
+    const { insert_files_one } = await gqlClient.request(addFileMutation, {
+      s3_path: (req.file as any).key,
+    });
+    res.send(
+      "Successfully uploaded " +
+        req.file.originalname +
+        " and registered id " +
+        insert_files_one
+    );
+  }
+);
 
 // Get a file
 

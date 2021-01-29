@@ -14,3 +14,5 @@ export const GQL_AUTH_HEADER = process.env["GQL_AUTH_HEADER"] || "";
 export const GQL_AUTH_HEADER_VALUE = process.env["GQL_AUTH_HEADER_VALUE"] || "";
 export const GQL_HEADERS = {};
 GQL_HEADERS[GQL_AUTH_HEADER] = GQL_AUTH_HEADER_VALUE;
+
+export const UPLOAD_PASSWORD = process.env["UPLOAD_PASSWORD"] || "";

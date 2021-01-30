@@ -77,6 +77,7 @@ app.post(
         " ip=" +
         req.ip
     );
+    res.send(file);
   }
 );
 

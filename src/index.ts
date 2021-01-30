@@ -50,20 +50,32 @@ app.post(
       return next("Bad header 'Upload-Password'");
     }
     next();
+    console.log("Authorization ok for client ip=" + req.ip);
   },
   upload.single("file"),
   async (req, res) => {
+    const file_s3_key: string = (req.file as any).key;
+    console.log(
+      "Creating file entry for file originalname=" +
+        req.file.originalname +
+        ";key=" +
+        file_s3_key +
+        " ip=" +
+        req.ip
+    );
     const { insert_files_one: file } = await gqlClient.request(
       addFileMutation,
       {
-        s3_path: (req.file as any).key,
+        s3_path: file_s3_key,
       }
     );
-    res.send(
-      "Successfully uploaded " +
+    console.log(
+      "Successfully created entry for file originalname=" +
         req.file.originalname +
-        " and registered id " +
-        file.id
+        ";key=" +
+        file_s3_key +
+        " ip=" +
+        req.ip
     );
   }
 );

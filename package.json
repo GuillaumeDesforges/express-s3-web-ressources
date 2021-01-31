@@ -1,5 +1,5 @@
 {
-  "name": "oliviesdesforges-files",
+  "name": "express-s3-web-ressources",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",

@@ -6,10 +6,10 @@
     "configurations": [
         {
             "name": "Run server (dev)",
-            "type": "pwa-node",
-            "runtimeExecutable": "yarn",
-            "args": ["ts-node-dev", "--respawn", "--inspect", "--transpile-only", "src/index.ts"],
+            "type": "node-terminal",
             "request": "launch",
+            "command": "yarn dev",
+            "cwd": "${workspaceFolder}"
           }
     ]
 }

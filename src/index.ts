@@ -47,37 +47,47 @@ app.post(
   (req, res, next) => {
     const authHeader = req.headers["upload-password"];
     if (authHeader !== UPLOAD_PASSWORD) {
-      return next("Bad header 'Upload-Password'");
+      res.json({ code: 403, message: "Bad header 'upload-password'" });
+      return;
     }
     next();
     console.log("Authorization ok for client ip=" + req.ip);
   },
   upload.single("file"),
   async (req, res) => {
-    const file_s3_key: string = (req.file as any).key;
-    console.log(
-      "Creating file entry for file originalname=" +
-        req.file.originalname +
-        ";key=" +
-        file_s3_key +
-        " ip=" +
-        req.ip
-    );
-    const { insert_files_one: file } = await gqlClient.request(
-      addFileMutation,
-      {
-        s3_path: file_s3_key,
-      }
-    );
-    console.log(
-      "Successfully created entry for file originalname=" +
-        req.file.originalname +
-        ";key=" +
-        file_s3_key +
-        " ip=" +
-        req.ip
-    );
-    res.send(file);
+    try {
+      const file_s3_key: string = (req.file as any).key;
+      console.log(
+        "Creating file entry for file originalname=" +
+          req.file.originalname +
+          ";key=" +
+          file_s3_key +
+          " ip=" +
+          req.ip
+      );
+      const { insert_files_one: file } = await gqlClient.request(
+        addFileMutation,
+        {
+          s3_path: file_s3_key,
+        }
+      );
+      console.log(
+        "Successfully created entry for file originalname=" +
+          req.file.originalname +
+          ";key=" +
+          file_s3_key +
+          " ip=" +
+          req.ip
+      );
+      res.json({ code: 200, file });
+    } catch (e) {
+      console.log("Could not send file to S3");
+      console.log(e);
+      res.json({
+        code: 500,
+        message: "Could not send file to S3, please contact admin",
+      });
+    }
   }
 );
 
